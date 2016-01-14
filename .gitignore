@@ -1,1 +1,12 @@
 *.zip
+*.classpath
+*.project
+*.settings/
+*target*
+*.jar
+*.war
+*.ear
+*.class
+/build/
+/bin/
+hw1-3/target/*

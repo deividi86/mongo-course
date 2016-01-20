@@ -7,6 +7,9 @@
 *.war
 *.ear
 *.class
+*.idea
+*.lnk
+*.iml
 /build/
 /bin/
 hw1-3/target/*

@@ -1,41 +1,42 @@
 package com.mongo;
 
-import com.mongodb.*;
+import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoCursor;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.all;
+
+import static com.mongodb.client.model.Sorts.ascending;
 
 import java.io.IOException;
+import java.util.Arrays;
+
 /**
  * Created by deividi.silva on 17/02/2016.
  */
 public class Question7 {
     public static void main(String[] args) throws IOException {
-        // db.albums.ensureIndex({"images" : 1})
         MongoClient c =  new MongoClient();
-        MongoDatabase db = c.getDatabase("photo");
+        MongoDatabase db = c.getDatabase("photos");
         MongoCollection<Document> images = db.getCollection("images");
         MongoCollection<Document> albums = db.getCollection("albums");
+        MongoCursor<Document> cursor = images.find().sort(ascending("_id")).iterator();
 
-        long totalCount = cursor.count();
-        long processedCount = 0;
-        long removedCount = 0;
         try {
-            while(cursor.hasNext()) {
-                DBObject image = cursor.next();
+            while(cursor.hasNext()){
+                Document image = cursor.next();
                 Integer imageId = (Integer) image.get("_id");
-                query = new BasicDBObject("images", imageId);
-                DBObject album = albums.findOne(query);
-                if (album == null) {
-                    images.remove(image);
-                    ++removedCount;
-
+                Document album = albums.find().filter(eq("images",imageId)).first();
+                if(album == null){
+                    images.findOneAndDelete(image);
                 }
-                ++processedCount;
             }
         } finally {
             cursor.close();
         }
 
+        System.out.println("Result: " +images.count(all("tags", Arrays.asList("sunrises"))));
     }
 }

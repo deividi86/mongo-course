@@ -13,6 +13,7 @@ public class Question8 {
 		MongoClient c =  new MongoClient();
 		MongoDatabase db = c.getDatabase("test");
 		MongoCollection<Document> animals = db.getCollection("animals");
+
 		Document animal = new Document("animal", "monkey");
 		animals.insertOne(animal);
 		animal.remove("animal");
